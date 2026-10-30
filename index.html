@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090d18">
+<title>DONAT STORE</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090d18;color:#fff;font-family:Arial,sans-serif;padding:18px}
+header{text-align:center;padding:25px 0}
+.logo{font-size:30px;font-weight:900;color:#50aaff}
+header p,.muted{color:#aab5ca}
+h2{font-size:20px}
+.games{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.game{background:#171f32;border:1px solid #293650;border-radius:16px;padding:20px 8px;text-align:center}
+.game span{font-size:30px}
+.game h3{font-size:15px;margin:12px 0 5px}
+.game p{font-size:12px;color:#aab5ca;margin:0}
+.game.active{border:2px solid #2589ff;background:#192943}
+.panel{background:#171f32;border:1px solid #293650;border-radius:18px;padding:18px;margin-top:22px}
+label{display:block;margin:15px 0 8px;color:#bdc9dc}
+input,select{width:100%;padding:14px;border-radius:11px;border:1px solid #35435e;background:#0d1424;color:white;font-size:16px}
+button{width:100%;padding:15px;background:#2589ff;color:white;border:0;border-radius:11px;font-size:16px;font-weight:bold;margin-top:18px}
+button:active{opacity:.8}
+.note{font-size:13px;color:#aab5ca;line-height:1.6}
+#result{white-space:pre-line;overflow-wrap:anywhere}
+.price{font-size:23px;font-weight:bold;color:#68b4ff;margin-top:18px}
+.hidden{display:none}
+footer{text-align:center;margin:25px 0;color:#8995ab;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+<div class="logo">DONAT STORE</div>
+<p>Маркази фармоиши маҳсулоти бозӣ</p>
+</header>
+
+<h2>Бозиҳоро интихоб кун</h2>
+<div class="games">
+<div class="game active" onclick="chooseGame('Free Fire',this)">
+<span>💎</span><h3>Free Fire</h3><p>Алмос ва ваучер</p>
+</div>
+<div class="game" onclick="chooseGame('PUBG Mobile',this)">
+<span>🎯</span><h3>PUBG Mobile</h3><p>UC</p>
+</div>
+<div class="game" onclick="chooseGame('Standoff 2',this)">
+<span>🔫</span><h3>Standoff 2</h3><p>Gold</p>
+</div>
+<div class="game" onclick="chooseGame('Brawl Stars',this)">
+<span>⭐</span><h3>Brawl Stars</h3><p>Маҳсулоти бозӣ</p>
+</div>
+</div>
+
+<div class="panel">
+<h2 id="formTitle">Фармоиши Free Fire</h2>
+<p class="muted">Маҳсулотро интихоб кун ва UID-и бозиро навис.</p>
+
+<label for="uid">UID-и бозӣ</label>
+<input id="uid" inputmode="numeric" maxlength="12" placeholder="UID-и худро навис">
+
+<label for="product">Маҳсулот</label>
+<select id="product" onchange="updatePrice()">
+<option value="100+10 алмос" data-price="8">100+10 алмос — 8 сомонӣ</option>
+<option value="300+10 алмос" data-price="27.5">300+10 алмос — 27.50 сомонӣ</option>
+<option value="500+72 алмос" data-price="44">500+72 алмос — 44 сомонӣ</option>
+<option value="1100+66 алмос" data-price="88">1100+66 алмос — 88 сомонӣ</option>
+<option value="2300+98 алмос" data-price="177">2300+98 алмос — 177 сомонӣ</option>
+<option value="6100+60 алмос" data-price="446">6100+60 алмос — 446 сомонӣ</option>
+<option value="Ваучери Лайт" data-price="4.5">Ваучери Лайт — 4.50 сомонӣ</option>
+<option value="Ваучери Ҳафтаина" data-price="15.5">Ваучери Ҳафтаина — 15.50 сомонӣ</option>
+<option value="Ваучери Моҳона" data-price="65">Ваучери Моҳона — 65 сомонӣ</option>
+</select>
+
+<div class="price" id="price">8 сомонӣ</div>
+
+<label for="payment">Усули пардохт</label>
+<select id="payment">
+<option value="Через терминал">Через терминал</option>
+<option value="Душанбе Сити">Душанбе Сити</option>
+<option value="Эсхата">Эсхата</option>
+<option value="Алиф">Алиф</option>
+</select>
+
+<button onclick="makeOrder()">Санҷидан ва дидани фармоиш</button>
+<div id="result" class="note"></div>
+</div>
+
+<footer>DONAT STORE · Фармоишҳо то тасдиқ шуданашон санҷишӣ мебошанд.</footer>
+
+<script>
+let selectedGame='Free Fire';
+
+function chooseGame(game,el){
+selectedGame=game;
+document.querySelectorAll('.game').forEach(x=>x.classList.remove('active'));
+el.classList.add('active');
+document.getElementById('formTitle').textContent='Фармоиши '+game;
+document.getElementById('result').textContent='';
+
+const product=document.getElementById('product');
+if(game==='Free Fire'){
+product.innerHTML=`
+<option value="100+10 алмос" data-price="8">100+10 алмос — 8 сомонӣ</option>
+<option value="300+10 алмос" data-price="27.5">300+10 алмос — 27.50 сомонӣ</option>
+<option value="500+72 алмос" data-price="44">500+72 алмос — 44 сомонӣ</option>
+<option value="1100+66 алмос" data-price="88">1100+66 алмос — 88 сомонӣ</option>
+<option value="2300+98 алмос" data-price="177">2300+98 алмос — 177 сомонӣ</option>
+<option value="6100+60 алмос" data-price="446">6100+60 алмос — 446 сомонӣ</option>
+<option value="Ваучери Лайт" data-price="4.5">Ваучери Лайт — 4.50 сомонӣ</option>
+<option value="Ваучери Ҳафтаина" data-price="15.5">Ваучери Ҳафтаина — 15.50 сомонӣ</option>
+<option value="Ваучери Моҳона" data-price="65">Ваучери Моҳона — 65 сомонӣ</option>`;
+}else{
+product.innerHTML='<option value="">Маҳсулот ҳоло дастрас нест</option>';
+}
+updatePrice();
+}
+
+function updatePrice(){
+const p=document.getElementById('product');
+const opt=p.options[p.selectedIndex];
+const price=opt?opt.dataset.price:null;
+document.getElementById('price').textContent=
+price!==undefined && price!==null ? Number(price).toLocaleString('en-US')+' сомонӣ' : 'Ҳоло дастрас нест';
+}
+
+function makeOrder(){
+const uid=document.getElementById('uid').value.trim();
+const product=document.getElementById('product');
+const opt=product.options[product.selectedIndex];
+const result=document.getElementById('result');
+
+if(!/^[0-9]{8,12}$/.test(uid)){
+result.textContent='UID нодуруст аст. UID бояд аз 8 то 12 рақам дошта бошад.';
+return;
+}
+if(!opt || !opt.dataset.price){
+result.textContent='Барои ин бозӣ маҳсулот ҳоло дастрас нест.';
+return;
+}
+const payment=document.getElementById('payment').value;
+const price=Number(opt.dataset.price).toLocaleString('en-US');
+
+result.textContent=
+'ФАРМОИШИ САНҶИШӢ\\n'+
+'Бозӣ: '+selectedGame+'\\n'+
+'UID: '+uid+'\\n'+
+'Маҳсулот: '+opt.value+'\\n'+
+'Нарх: '+price+' сомонӣ\\n'+
+'Пардохт: '+payment+'\\n\\n'+
+'Диққат: UID ҳоло бо сервери бозӣ санҷида нашудааст. Пардохт ва фиристодани фармоиш ҳоло фаъол нест.';
+}
+updatePrice();
+</script>
+</body>
+</html>
